@@ -9,10 +9,8 @@
   },
   "dependencies": {
     "@rowsncolumns/spreadsheet": "^6.2.10",
-    "immer": "^7.0.8",
     "next": "9.5.2",
     "react": "16.13.1",
-    "react-datasheet": "^1.4.8",
     "react-dom": "16.13.1"
   },
   "devDependencies": {
