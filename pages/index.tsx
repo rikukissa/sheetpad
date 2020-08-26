@@ -33,7 +33,9 @@ export default function Home() {
       return setSheets([
         {
           ...defaultSheets[0],
-          cells: jsonpack.unpack(window.location.hash.substr(1)),
+          cells: jsonpack.unpack(
+            decodeURIComponent(window.location.hash.substr(1))
+          ),
         },
       ]);
     }
@@ -42,7 +44,11 @@ export default function Home() {
   }, []);
 
   const persistSheet = (sheet: Sheet[]) => {
-    window.history.pushState(null, null, "#" + encodeCells(sheet[0].cells));
+    window.history.pushState(
+      null,
+      null,
+      "#" + encodeURIComponent(encodeCells(sheet[0].cells))
+    );
     setSheets(sheet);
   };
   return (
