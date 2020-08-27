@@ -1,28 +1,21 @@
 import Head from "next/head";
-import jsonpack from "jsonpack";
 import SpreadSheet, {
   CellConfig,
   defaultSheets,
-  produceState,
   Sheet,
 } from "@rowsncolumns/spreadsheet";
 import { useEffect, useState } from "react";
+import lzString from "lz-string";
+import jsonpack from "jsonpack";
 
 function encodeCells(cells: Record<string, Record<string, CellConfig>>) {
-  return jsonpack.pack(cells);
+  return lzString.compressToEncodedURIComponent(jsonpack.pack(cells));
 }
 
-function getPersistedState() {
-  if (typeof window !== "undefined" && !window.location.hash) {
-    return [
-      {
-        ...defaultSheets[0],
-        cells: jsonpack.unpack(window.location.hash.substr(1)),
-      },
-    ];
-  }
-
-  return defaultSheets;
+function decodeCells(cellsString: string) {
+  return jsonpack.unpack(
+    lzString.decompressFromEncodedURIComponent(cellsString)
+  );
 }
 
 export default function Home() {
@@ -30,12 +23,16 @@ export default function Home() {
 
   useEffect(() => {
     if (window.location.hash) {
+      const cells = decodeCells(window.location.hash.substr(1));
+
+      if (!cells) {
+        return;
+      }
+
       return setSheets([
         {
           ...defaultSheets[0],
-          cells: jsonpack.unpack(
-            decodeURIComponent(window.location.hash.substr(1))
-          ),
+          cells: cells,
         },
       ]);
     }
@@ -44,11 +41,7 @@ export default function Home() {
   }, []);
 
   const persistSheet = (sheet: Sheet[]) => {
-    window.history.pushState(
-      null,
-      null,
-      "#" + encodeURIComponent(encodeCells(sheet[0].cells))
-    );
+    window.history.pushState(null, null, "#" + encodeCells(sheet[0].cells));
     setSheets(sheet);
   };
   return (

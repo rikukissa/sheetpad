@@ -9,7 +9,9 @@
   },
   "dependencies": {
     "@rowsncolumns/spreadsheet": "^6.2.10",
+    "@types/lz-string": "^1.3.34",
     "jsonpack": "^1.1.5",
+    "lz-string": "^1.4.4",
     "next": "9.5.2",
     "react": "16.13.1",
     "react-dom": "16.13.1"
